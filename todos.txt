@@ -1,0 +1,71 @@
+todos
+
+Links/
+Users
+Leads
+Orders
+Customer
+Quotations
+CMS
+
+
+User Access=>  "SuperAdmin"|"User"| "Admin" | 
+
+Login?
+	Mobile/Email
+	Password
+
+Register?
+	Active/Deactive
+	First & Last 
+	Mobile
+	Email
+	Department => Account, sales etc. Seperate Table for it.
+	Country, State & City
+	Password.
+
+* Master for Departments.
+* Country & States.
+* User Types => SuperAdmin | Admin | Sales | Marketing
+
+List of customer.
+
+Customer ?
+	name
+	email
+	mobile
+	Country
+	State
+	City
+	Business Details?
+			GST.
+	Address.
+	KYC => PAN|ADHAR|GST All imp.
+	Shop Images.
+	Lattitude * Laongitude.
+	Submitted By.
+	Contact Persons> Tabs> Persons.
+					Name
+					Email
+					Mobile
+					Designation.
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
