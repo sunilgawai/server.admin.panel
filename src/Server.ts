@@ -1,14 +1,14 @@
 import express, { Application } from "express";
 import { errorHandler } from "./middlewares";
 import bodyParser from "body-parser";
-import morgan from "morgan";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import { PrismaClient } from "@prisma/client";
 
 // Application init.
 const app: Application = express();
 
 // Middlewares.
-app.use(morgan("dev"));
 app.use(cors({
     origin: "http://localhost:3000",
     methods: ["POST", "PUT", "DELETE", "GET"],
@@ -16,15 +16,13 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // Init Routes.
-// app.use('/api/auth', authRoutes);
-// app.use('/api', clientRoutes);
 
-
-app.use((req, res) => {
-    if (req.path == '/') return res.json({ msg: 'Welcome to www.leadsmanagement.com' });
+app.use(async (req, res) => {
+    if (req.path == '/') return res.json({ msg: 'Welcome to www.petpooja.com' });
 
     res.send(`
     <h2>No Information Foud For This Route.</h2>

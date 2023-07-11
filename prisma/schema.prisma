@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,165 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SuperAdmin
+  Admin
+  User
+}
+
+model User {
+  id        String     @id @unique() @default(uuid())
+  name      String
+  email     String     @unique()
+  phone     String
+  role      Role       @default(User)
+  Customers Customer[]
+}
+
+enum KycType {
+  PANCARD
+  ADHARCARD
+  GST
+}
+
+model Kyc {
+  id       String     @id @unique() @default(uuid())
+  type     KycType    @default(PANCARD)
+  status   String
+  Customer Customer[]
+}
+
+model Customer {
+  id                  String     @id @unique() @default(uuid())
+  name                String
+  email               String     @unique()
+  phone               String
+  Country             Countries  @relation(fields: [countriesId], references: [id])
+  State               States     @relation(fields: [statesId], references: [id])
+  City                Cities     @relation(fields: [citiesId], references: [id])
+  countriesId         Int        @db.UnsignedMediumInt
+  statesId            Int        @db.UnsignedMediumInt
+  citiesId            Int        @db.UnsignedMediumInt
+  shop                Shop       @relation(fields: [shopId], references: [id])
+  shopId              String
+  shop_images         ShopImages @relation(fields: [shopImagesId], references: [id])
+  shopImagesId        String
+  submitted_by        User       @relation(fields: [submitted_by_userId], references: [id])
+  submitted_by_userId String
+  kyc                 Kyc        @relation(fields: [kycId], references: [id])
+  kycId               String
+  Address             Address[]
+}
+
+model Shop {
+  id           String     @id @unique() @default(uuid())
+  name         String
+  images       ShopImages @relation(fields: [shopImagesId], references: [id])
+  shopImagesId String
+  Customer     Customer[] // Can be removed as we don't want to relate shop to customers. Instead, it will be referenced to Shop Table.
+}
+
+model ShopImages {
+  id       String     @id @unique() @default(uuid())
+  image_1  String
+  image_2  String?
+  image_3  String?
+  image_4  String?
+  Customer Customer[]
+  Shop     Shop[]
+}
+
+// Address for customer.
+model Address {
+  id          String    @id @unique() @default(uuid())
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  country     Countries @relation(fields: [countriesId], references: [id])
+  countriesId Int       @db.UnsignedMediumInt
+  state       States    @relation(fields: [statesId], references: [id])
+  statesId    Int       @db.UnsignedMediumInt
+  city        Cities    @relation(fields: [citiesId], references: [id])
+  citiesId    Int       @db.UnsignedMediumInt
+  customerId  String
+  lattitude   String
+  longitude   String
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Cities {
+  id           Int        @id @default(autoincrement()) @db.UnsignedMediumInt
+  name         String     @db.VarChar(255)
+  state_id     Int        @db.UnsignedMediumInt
+  state_code   String     @db.VarChar(255)
+  country_id   Int        @db.UnsignedMediumInt
+  country_code String     @db.Char(2)
+  latitude     Decimal    @db.Decimal(10, 8)
+  longitude    Decimal    @db.Decimal(11, 8)
+  created_at   DateTime   @default(dbgenerated("'2014-01-01 06:31:01'")) @db.Timestamp(0)
+  updated_at   DateTime   @default(now()) @db.Timestamp(0)
+  flag         Boolean    @default(true)
+  wikiDataId   String?    @db.VarChar(255)
+  states       States     @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_1")
+  countries    Countries  @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_2")
+  Customer     Customer[]
+  Address      Address[]
+
+  @@index([state_id], map: "cities_test_ibfk_1")
+  @@index([country_id], map: "cities_test_ibfk_2")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Countries {
+  id              Int        @id @default(autoincrement()) @db.UnsignedMediumInt
+  name            String     @db.VarChar(100)
+  iso3            String?    @db.Char(3)
+  numeric_code    String?    @db.Char(3)
+  iso2            String?    @db.Char(2)
+  phonecode       String?    @db.VarChar(255)
+  capital         String?    @db.VarChar(255)
+  currency        String?    @db.VarChar(255)
+  currency_name   String?    @db.VarChar(255)
+  currency_symbol String?    @db.VarChar(255)
+  tld             String?    @db.VarChar(255)
+  native          String?    @db.VarChar(255)
+  region          String?    @db.VarChar(255)
+  subregion       String?    @db.VarChar(255)
+  timezones       String?    @db.Text
+  translations    String?    @db.Text
+  latitude        Decimal?   @db.Decimal(10, 8)
+  longitude       Decimal?   @db.Decimal(11, 8)
+  emoji           String?
+  emojiU          String?
+  created_at      DateTime?  @db.Timestamp(0)
+  updated_at      DateTime   @default(now()) @db.Timestamp(0)
+  flag            Boolean    @default(true)
+  wikiDataId      String?    @db.VarChar(255)
+  cities          Cities[]
+  states          States[]
+  Customer        Customer[]
+  Address         Address[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model States {
+  id           Int        @id @default(autoincrement()) @db.UnsignedMediumInt
+  name         String     @db.VarChar(255)
+  country_id   Int        @db.UnsignedMediumInt
+  country_code String     @db.Char(2)
+  fips_code    String?    @db.VarChar(255)
+  iso2         String?    @db.VarChar(255)
+  type         String?
+  latitude     Decimal?   @db.Decimal(10, 8)
+  longitude    Decimal?   @db.Decimal(11, 8)
+  created_at   DateTime?  @db.Timestamp(0)
+  updated_at   DateTime   @default(now()) @db.Timestamp(0)
+  flag         Boolean    @default(true)
+  wikiDataId   String?    @db.VarChar(255)
+  cities       Cities[]
+  countries    Countries  @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "country_region_final")
+  Customer     Customer[]
+  Address      Address[]
+
+  @@index([country_id], map: "country_region")
 }

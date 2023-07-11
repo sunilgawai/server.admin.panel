@@ -1,0 +1,22 @@
+{
+    "cart_table_id": 3,
+    "customer_first_name": "sunil",
+    "customer_last_name": "gawai",
+    "customer_mobile": "7397973164",
+    "payment_status": "1",
+    "payment_method": "PART",
+    "cart_items": [
+        {
+            "item_id": 21673,
+            "quantity": 2
+        },
+        {
+            "item_id": 21673,
+            "quantity": 10
+        },
+        {
+            "item_id": 21673,
+            "quantity": 2
+        }
+    ]
+}
