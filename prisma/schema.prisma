@@ -31,7 +31,7 @@ enum KycType {
 model Kyc {
   id       String     @id @unique() @default(uuid())
   type     KycType    @default(PANCARD)
-  status   String
+  status   Boolean    @default(false)
   Customer Customer[]
 }
 

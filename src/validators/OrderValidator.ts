@@ -1,4 +1,3 @@
-import { ICart } from "../typings";
 import Joi from "joi";
 
 class OrderValidator {

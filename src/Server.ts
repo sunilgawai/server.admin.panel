@@ -1,9 +1,9 @@
 import express, { Application } from "express";
 import { errorHandler } from "./middlewares";
+import cookieParser from "cookie-parser";
+import { authRouter } from "./routes";
 import bodyParser from "body-parser";
 import cors from "cors";
-import cookieParser from "cookie-parser";
-import { PrismaClient } from "@prisma/client";
 
 // Application init.
 const app: Application = express();
@@ -20,6 +20,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // Init Routes.
+app.use('/api/auth', authRouter);
 
 app.use(async (req, res) => {
     if (req.path == '/') return res.json({ msg: 'Welcome to www.petpooja.com' });
