@@ -38,6 +38,14 @@ class AuthController {
                     phone: phone,
                     email: email,
                     password: hashedPassword
+                },
+                select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    phone: true,
+                    email: true,
+                    role: true
                 }
             })
         } catch (error) {
@@ -58,7 +66,6 @@ class AuthController {
         }
 
         res.status(200).json({
-            message: "register successfully",
             user: user,
             access_token: access_token,
             refresh_token
@@ -120,6 +127,14 @@ class AuthController {
             user = await database.user.findUnique({
                 where: {
                     id: authUser.id,
+                },
+                select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    phone: true,
+                    email: true,
+                    role: true
                 }
             })
             if (!user) {
@@ -136,7 +151,7 @@ class AuthController {
         try {
             await database.refreshToken.delete({
                 where: {
-                    token: req.body.refresh_token
+                    token: req.body.refreshToken
                 }
             })
                 .then(token => {
@@ -202,7 +217,7 @@ class AuthController {
         } catch (error) {
             return next(error);
         }
-        
+
         res.status(200).json({
             message: "Refresh  successfully",
             user: user,
