@@ -7,8 +7,18 @@ class CartValidator {
         last_name: Joi.string().required(),
         email: Joi.string().email().required(),
         phone: Joi.string().required(),
-        password: Joi.string().required(),
+        password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
         repeat_password: Joi.ref('password'),
+    }).validate(req_body);
+
+    static login_request = (req_body: object) => Joi.object({
+        email: Joi.string().email().required(),
+        phone: Joi.string().required(),
+        password: Joi.string().required(),
+    }).validate(req_body);
+
+    static refresh_request = (req_body: object) => Joi.object({
+        refresh_token: Joi.string().required(),
     }).validate(req_body);
 }
 

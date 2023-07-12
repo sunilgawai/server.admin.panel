@@ -1,9 +1,8 @@
 import { Express } from "express-serve-static-core";
 
 interface IRequestUser {
-    _id: string
-    email: string
-    role: "CUSTOMER" | "ADMIN" | string
+    id: string
+    role: string
 }
 
 declare module "express-serve-static-core" {
