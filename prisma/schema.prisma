@@ -14,19 +14,35 @@ enum Role {
 }
 
 model User {
-  id         String     @id @unique() @default(uuid())
-  first_name String
-  last_name  String
-  phone      String     @unique()
-  email      String     @unique()
-  password   String
-  role       Role       @default(User)
-  Customers  Customer[]
+  id           String      @id @unique() @default(uuid())
+  first_name   String
+  last_name    String
+  phone        String      @unique()
+  email        String      @unique()
+  password     String
+  role         Role        @default(User)
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
+  address      Address?    @relation(fields: [addressId], references: [id])
+  addressId    String?
+  Customers    Customer[]
+  // Department & Address compulsory for registration.
 }
 
 model RefreshToken {
   id    String @id @default(uuid())
   token String @unique @db.VarChar(500)
+}
+
+model Department {
+  id   String         @id @default(uuid())
+  name DepartmentType @unique
+  User User[]
+}
+
+enum DepartmentType {
+  ACCOUNT
+  SALES
 }
 
 enum KycType {
@@ -43,25 +59,23 @@ model Kyc {
 }
 
 model Customer {
-  id                  String     @id @unique() @default(uuid())
+  id                  String    @id @unique() @default(uuid())
   name                String
-  email               String     @unique()
+  email               String    @unique()
   phone               String
-  Country             Countries  @relation(fields: [countriesId], references: [id])
-  State               States     @relation(fields: [statesId], references: [id])
-  City                Cities     @relation(fields: [citiesId], references: [id])
-  countriesId         Int        @db.UnsignedMediumInt
-  statesId            Int        @db.UnsignedMediumInt
-  citiesId            Int        @db.UnsignedMediumInt
-  shop                Shop       @relation(fields: [shopId], references: [id])
+  Country             Countries @relation(fields: [countryId], references: [id])
+  State               States    @relation(fields: [stateId], references: [id])
+  City                Cities    @relation(fields: [cityId], references: [id])
+  countryId           Int       @db.UnsignedMediumInt
+  stateId             Int       @db.UnsignedMediumInt
+  cityId              Int       @db.UnsignedMediumInt
+  shop                Shop      @relation(fields: [shopId], references: [id])
   shopId              String
-  shop_images         ShopImages @relation(fields: [shopImagesId], references: [id])
-  shopImagesId        String
-  submitted_by        User       @relation(fields: [submitted_by_userId], references: [id])
+  submitted_by        User      @relation(fields: [submitted_by_userId], references: [id])
   submitted_by_userId String
-  kyc                 Kyc        @relation(fields: [kycId], references: [id])
+  kyc                 Kyc       @relation(fields: [kycId], references: [id])
   kycId               String
-  Address             Address[]
+  address              Address[]
 }
 
 model Shop {
@@ -73,28 +87,29 @@ model Shop {
 }
 
 model ShopImages {
-  id       String     @id @unique() @default(uuid())
-  image_1  String
-  image_2  String?
-  image_3  String?
-  image_4  String?
-  Customer Customer[]
-  Shop     Shop[]
+  id      String  @id @unique() @default(uuid())
+  image_1 String
+  image_2 String?
+  image_3 String?
+  image_4 String?
+  Shop    Shop[]
 }
 
 // Address for customer.
 model Address {
-  id          String    @id @unique() @default(uuid())
-  customer    Customer  @relation(fields: [customerId], references: [id])
-  country     Countries @relation(fields: [countriesId], references: [id])
-  countriesId Int       @db.UnsignedMediumInt
-  state       States    @relation(fields: [statesId], references: [id])
-  statesId    Int       @db.UnsignedMediumInt
-  city        Cities    @relation(fields: [citiesId], references: [id])
-  citiesId    Int       @db.UnsignedMediumInt
-  customerId  String
-  lattitude   String
-  longitude   String
+  id         String    @id @unique() @default(uuid())
+  country    Countries @relation(fields: [countryId], references: [id])
+  countryId  Int       @db.UnsignedMediumInt
+  state      States    @relation(fields: [stateId], references: [id])
+  stateId    Int       @db.UnsignedMediumInt
+  city       Cities    @relation(fields: [citiesId], references: [id])
+  citiesId   Int       @db.UnsignedMediumInt
+  lattitude  String
+  longitude  String
+  User       User[]
+  Customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String?
+  default    Boolean   @default(false)
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

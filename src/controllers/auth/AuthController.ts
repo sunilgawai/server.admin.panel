@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { AuthValidator } from "../validators";
-import { database } from "../services/database";
-import { CustomErrorHandler, JwtService } from "../services";
+import { AuthValidator } from "../../validators";
+import { database } from "../../services/database";
+import { CustomErrorHandler, JwtService } from "../../services";
 import bcrypt from "bcrypt";
-import { REFRESH_TOKEN_SECRET } from "../../config";
+import { REFRESH_TOKEN_SECRET } from "../../../config";
 
 class AuthController {
     static async register(req: Request, res: Response, next: NextFunction): Promise<any> {
