@@ -203,6 +203,7 @@ class AuthController {
     static async me(req: Request, res: Response, next: NextFunction): Promise<any> {
         // getting logged in user from request.headers;
         const authUser = req.user;
+        console.log("user", req.user);
         let user;
         try {
             user = await database.user.findUnique({
