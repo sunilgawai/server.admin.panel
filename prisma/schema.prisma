@@ -23,8 +23,7 @@ model User {
   role         Role        @default(User)
   department   Department? @relation(fields: [departmentId], references: [id])
   departmentId String?
-  address      Address?    @relation(fields: [addressId], references: [id])
-  addressId    String?
+  Address      Address[]
   Customers    Customer[]
   // Department & Address compulsory for registration.
 }
@@ -75,7 +74,7 @@ model Customer {
   submitted_by_userId String
   kyc                 Kyc       @relation(fields: [kycId], references: [id])
   kycId               String
-  address              Address[]
+  address             Address[]
 }
 
 model Shop {
@@ -104,12 +103,13 @@ model Address {
   stateId    Int       @db.UnsignedMediumInt
   city       Cities    @relation(fields: [citiesId], references: [id])
   citiesId   Int       @db.UnsignedMediumInt
-  lattitude  String
-  longitude  String
-  User       User[]
+  lattitude  String?
+  longitude  String?
   Customer   Customer? @relation(fields: [customerId], references: [id])
   customerId String?
   default    Boolean   @default(false)
+  User       User?     @relation(fields: [userId], references: [id])
+  userId     String?
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

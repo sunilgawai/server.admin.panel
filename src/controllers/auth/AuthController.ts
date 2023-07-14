@@ -8,11 +8,12 @@ import { REFRESH_TOKEN_SECRET } from "../../../config";
 class AuthController {
     static async register(req: Request, res: Response, next: NextFunction): Promise<any> {
         // Request Validation.
+        console.log("body", req.body);
         const { error } = AuthValidator.register_request(req.body);
         if (error) {
             return next(error);
         }
-        const { first_name, last_name, phone, email, password } = req.body;
+        const { first_name, last_name, phone, email, password, department, country, state, city } = req.body;
 
         try {
             const user = await database.user.findUnique({
@@ -37,7 +38,16 @@ class AuthController {
                     last_name: last_name,
                     phone: phone,
                     email: email,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    departmentId: department,
+                    Address: {
+                        create: {
+                            countryId: parseInt(country),
+                            citiesId: parseInt(city),
+                            stateId: parseInt(state),
+                            default: true
+                        }
+                    }
                 },
                 select: {
                     id: true,
@@ -45,7 +55,38 @@ class AuthController {
                     last_name: true,
                     phone: true,
                     email: true,
-                    role: true
+                    role: true,
+                    Address: {
+                        select: {
+                            country: {
+                                select: {
+                                    name: true,
+                                    capital: true,
+                                    currency: true,
+                                    flag: true,
+                                    currency_name: true,
+                                    currency_symbol: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            },
+                            state: {
+                                select: {
+                                    name: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            },
+                            city: {
+                                select: {
+                                    name: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            }
+                        }
+                    },
+                    department: true
                 }
             })
         } catch (error) {
@@ -87,6 +128,46 @@ class AuthController {
                 where: {
                     email: email,
                     phone: phone
+                },
+                select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    phone: true,
+                    email: true,
+                    role: true,
+                    password: true,
+                    Address: {
+                        select: {
+                            country: {
+                                select: {
+                                    name: true,
+                                    capital: true,
+                                    currency: true,
+                                    flag: true,
+                                    currency_name: true,
+                                    currency_symbol: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            },
+                            state: {
+                                select: {
+                                    name: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            },
+                            city: {
+                                select: {
+                                    name: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            }
+                        }
+                    },
+                    department: true
                 }
             })
             if (!user) {
@@ -134,7 +215,38 @@ class AuthController {
                     last_name: true,
                     phone: true,
                     email: true,
-                    role: true
+                    role: true,
+                    Address: {
+                        select: {
+                            country: {
+                                select: {
+                                    name: true,
+                                    capital: true,
+                                    currency: true,
+                                    flag: true,
+                                    currency_name: true,
+                                    currency_symbol: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            },
+                            state: {
+                                select: {
+                                    name: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            },
+                            city: {
+                                select: {
+                                    name: true,
+                                    latitude: true,
+                                    longitude: true
+                                }
+                            }
+                        }
+                    },
+                    department: true
                 }
             })
             if (!user) {

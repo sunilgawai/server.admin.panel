@@ -4,6 +4,10 @@ class CartValidator {
     static register_request = (req_body: object) => Joi.object({
         first_name: Joi.string().required(),
         last_name: Joi.string().required(),
+        department: Joi.string().required(),
+        country: Joi.string().required(),
+        state: Joi.string().required(),
+        city: Joi.string().required(),
         email: Joi.string().email().required(),
         phone: Joi.string().required(),
         password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
