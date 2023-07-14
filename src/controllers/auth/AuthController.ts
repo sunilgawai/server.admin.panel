@@ -74,6 +74,7 @@ class AuthController {
 
     static async login(req: Request, res: Response, next: NextFunction): Promise<any> {
         // Validating request.
+        console.log(req.body)
         const { error } = AuthValidator.login_request(req.body);
         if (error) {
             return next(error);
@@ -112,7 +113,6 @@ class AuthController {
             return next(error);
         }
         res.status(200).json({
-            message: "Login successfully",
             user: user,
             access_token: access_token,
             refresh_token
@@ -148,6 +148,7 @@ class AuthController {
     }
 
     static async logout(req: Request, res: Response, next: NextFunction): Promise<any> {
+        console.log("logout token", req.body);
         try {
             await database.refreshToken.delete({
                 where: {

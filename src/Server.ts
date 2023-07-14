@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import { errorHandler } from "./middlewares";
 import cookieParser from "cookie-parser";
-import { authRouter } from "./routes";
+import { authRouter, customerRouter, utilityRouter } from "./routes";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -21,12 +21,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // Init Routes.
 app.use('/api/auth', authRouter);
+app.use('/api', customerRouter);
+app.use('/api', utilityRouter);
 
 app.use(async (req, res) => {
-    if (req.path == '/') return res.json({ msg: 'Welcome to www.petpooja.com' });
+    if (req.path == '/') return res.json({ msg: 'Welcome to leads management system' });
 
     res.send(`
-    <h2>No Information Foud For This Route.</h2>
+    <h2>No Information Found For This Route.</h2>
     <a href="http:localhost:4000">Home Route</a>
     `)
 })
