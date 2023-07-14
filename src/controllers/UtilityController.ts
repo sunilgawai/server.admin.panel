@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { database } from "../services/database";
+import { CustomErrorHandler } from "../services";
 
 
 class UtilityController {
@@ -29,11 +30,11 @@ class UtilityController {
         } catch (error) {
             return next(error);
         }
-        if(req.query.state) {
+        if (req.query.state) {
             try {
-                
+
             } catch (error) {
-                
+
             }
         }
         try {
@@ -75,9 +76,13 @@ class UtilityController {
         }
     }
 
-    static async getState(req: Request, res: Response, next: NextFunction) {
+    static async getStates(req: Request, res: Response, next: NextFunction) {
+        if (!req.query.country) {
+            return next(CustomErrorHandler.notFound("Country ID not specified"));
+        }
+
         const { country } = req.query as { country: string };
-        console.log(country);
+        console.log('country', country);
         const countryId = parseInt(country);
         try {
             await database.states.findMany({
@@ -98,9 +103,12 @@ class UtilityController {
         }
     }
 
-    static async getCity(req: Request, res: Response, next: NextFunction) {
+    static async getCities(req: Request, res: Response, next: NextFunction) {
+        if (!req.query.state) {
+            return next(CustomErrorHandler.notFound("State ID not specified"));
+        }
         const { state } = req.query as { state: string };
-        console.log(state);
+        console.log('state', state);
         const stateId = parseInt(state);
         try {
             await database.cities.findMany({
