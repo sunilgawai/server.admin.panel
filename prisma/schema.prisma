@@ -68,21 +68,21 @@ model Customer {
   countryId           Int       @db.UnsignedMediumInt
   stateId             Int       @db.UnsignedMediumInt
   cityId              Int       @db.UnsignedMediumInt
-  shop                Shop      @relation(fields: [shopId], references: [id])
-  shopId              String
   submitted_by        User      @relation(fields: [submitted_by_userId], references: [id])
   submitted_by_userId String
   kyc                 Kyc       @relation(fields: [kycId], references: [id])
   kycId               String
   address             Address[]
+  Shop                Shop?     @relation(fields: [shopId], references: [id])
+  shopId              String?
 }
 
 model Shop {
-  id           String     @id @unique() @default(uuid())
+  id           String      @id @unique() @default(uuid())
   name         String
-  images       ShopImages @relation(fields: [shopImagesId], references: [id])
-  shopImagesId String
-  Customer     Customer[] // Can be removed as we don't want to relate shop to customers. Instead, it will be referenced to Shop Table.
+  images       ShopImages? @relation(fields: [shopImagesId], references: [id])
+  shopImagesId String?
+  customer     Customer[]
 }
 
 model ShopImages {
