@@ -35,14 +35,10 @@ model RefreshToken {
 
 model Department {
   id   String         @id @default(uuid())
-  name DepartmentType @unique
+  name String @unique @db.VarChar(25)
   User User[]
 }
 
-enum DepartmentType {
-  ACCOUNT
-  SALES
-}
 
 enum KycType {
   PANCARD
@@ -59,7 +55,8 @@ model Kyc {
 
 model Customer {
   id                  String    @id @unique() @default(uuid())
-  name                String
+  first_name          String
+  last_name           String
   email               String    @unique()
   phone               String
   Country             Countries @relation(fields: [countryId], references: [id])
@@ -68,10 +65,10 @@ model Customer {
   countryId           Int       @db.UnsignedMediumInt
   stateId             Int       @db.UnsignedMediumInt
   cityId              Int       @db.UnsignedMediumInt
-  submitted_by        User      @relation(fields: [submitted_by_userId], references: [id])
-  submitted_by_userId String
-  kyc                 Kyc       @relation(fields: [kycId], references: [id])
-  kycId               String
+  submitted_by        User?      @relation(fields: [submitted_by_userId], references: [id])
+  submitted_by_userId String?
+  kyc                 Kyc?       @relation(fields: [kycId], references: [id])
+  kycId               String?
   address             Address[]
   Shop                Shop?     @relation(fields: [shopId], references: [id])
   shopId              String?

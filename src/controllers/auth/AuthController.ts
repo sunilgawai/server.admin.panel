@@ -106,10 +106,19 @@ class AuthController {
             return next(error);
         }
 
+        res.cookie('refresh_token', refresh_token, {
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            httpOnly: true
+        });
+
+        res.cookie('access_token', access_token, {
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            httpOnly: true
+        });
+
         res.status(200).json({
             user: user,
-            access_token: access_token,
-            refresh_token
+            auth: true
         });
     }
 
@@ -193,10 +202,20 @@ class AuthController {
         } catch (error) {
             return next(error);
         }
+
+        res.cookie('refresh_token', refresh_token, {
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            httpOnly: true
+        });
+
+        res.cookie('access_token', access_token, {
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            httpOnly: true
+        });
+
         res.status(200).json({
             user: user,
-            access_token: access_token,
-            refresh_token
+            auth: true
         });
     }
 

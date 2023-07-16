@@ -130,10 +130,39 @@ class UtilityController {
     }
 
     static async getDepartments(req: Request, res: Response, next: NextFunction) {
+        // try { // For Testing.
+        //     await database.kyc.createMany({
+        //         data: ([{
+        //             type: 'ADHARCARD',
+        //             status: true
+        //         },{
+        //             type: 'GST',
+        //             status: true
+        //         },{
+        //             type: 'PANCARD',
+        //             status: true
+        //         }])
+        //     })
+        // } catch (error) {
+        //     return next(error);
+        // }
         try {
             await database.department.findMany()
                 .then(departments => {
                     res.json(departments);
+                }).catch(err => {
+                    return next(err);
+                })
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    static async getKycList(req: Request, res: Response, next: NextFunction) {
+        try {
+            await database.kyc.findMany()
+                .then(list => {
+                    res.json(list);
                 }).catch(err => {
                     return next(err);
                 })

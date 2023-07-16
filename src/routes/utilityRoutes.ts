@@ -9,5 +9,6 @@ utilityRouter.get('/location/cities', UtilityController.getCities);
 
 
 utilityRouter.get('/departments', UtilityController.getDepartments);
+utilityRouter.get('/kyc', UtilityController.getKycList);
 
 export default utilityRouter;

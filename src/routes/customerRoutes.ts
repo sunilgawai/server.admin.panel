@@ -6,6 +6,8 @@ const customerRouter = Router();
 
 customerRouter.post('/customer', auth, CustomerController.store);
 
+customerRouter.get('/customer', auth, CustomerController.get);
+
 
 
 export default customerRouter;
