@@ -65,7 +65,10 @@ class CustomerController {
                     Shop: true,
                     kyc: true,
                     address: true,
-                    submitted_by: true
+                    submitted_by: true,
+                    Country: true,
+                    State: true,
+                    City: true
                 }
             }).then((result) => {
                 res.status(200).json(result);
