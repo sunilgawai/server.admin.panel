@@ -12,6 +12,8 @@ customerRouter.get('/customer/:id', auth, CustomerController.view);
 
 customerRouter.delete('/customer/:id', auth, CustomerController.delete);
 
+customerRouter.put('/customer/:id', auth, CustomerController.update);
+
 
 
 export default customerRouter;

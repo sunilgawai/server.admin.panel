@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { CustomerValidator } from "../validators";
 import { database } from "../services/database";
+import { CustomErrorHandler } from "../services";
 
 class CustomerController {
     static async store(req: Request, res: Response, next: NextFunction) {
@@ -13,6 +14,22 @@ class CustomerController {
 
         const { first_name, last_name, phone, email, country, state, city, shop, kyc } = req.body;
 
+        try {
+            const customer = await database.customer.findFirst({
+                where: {
+                    OR: [
+                        { phone: phone },
+                        { email: email }
+                    ]
+                }
+            });
+            if (customer) {
+                return next(CustomErrorHandler.alreadyExists("Customer with this credentials already exists."))
+            }
+        } catch (error) {
+            console.log("error", error);
+            return next(error);
+        }
         try {
             await database.customer.create({
                 data: {
@@ -68,6 +85,15 @@ class CustomerController {
             await database.customer.findUnique({
                 where: {
                     id: req.params.id
+                },
+                include: {
+                    Country: true,
+                    State: true,
+                    City: true,
+                    Shop: true,
+                    kyc: true,
+                    address: true,
+                    submitted_by: true
                 }
             }).then((customer) => {
                 res.status(200).json(customer);
@@ -81,9 +107,9 @@ class CustomerController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         // updating customers.
-        const { error } = CustomerValidator.store_request(req.body);
-
-        if(error) {
+        const { error } = CustomerValidator.update_request(req.body);
+        console.log({ 'req': req.body, id: req.params.id });
+        if (error) {
             return next(error);
         }
 
@@ -97,11 +123,11 @@ class CustomerController {
                     last_name: req.body.last_name,
                     phone: req.body.phone,
                     email: req.body.email,
-                    countryId: req.body.country,
-                    stateId: req.body.state,
-                    cityId: req.body.city,
-                    kyc: req.body.kyc,
-                    address: req.body.address
+                    Country: { connect: { id: req.body.country } },
+                    State: { connect: { id: req.body.state } },
+                    City: { connect: { id: req.body.city } },
+                    kyc: { connect: { id: req.body.kyc } },
+                    address: req.body.address,
                 },
                 include: {
                     Shop: true,
@@ -110,6 +136,7 @@ class CustomerController {
             }).then((customer) => {
                 res.status(200).send(customer);
             }).catch((err) => {
+                console.log(err);
                 return next(err);
             })
         } catch (error) {
@@ -129,6 +156,7 @@ class CustomerController {
             }).then((customer) => {
                 res.status(200).json(customer);
             }).catch((err) => {
+                console.log(err);
                 return next(err);
             })
         } catch (error) {

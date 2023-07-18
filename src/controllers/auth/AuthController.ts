@@ -16,13 +16,15 @@ class AuthController {
         const { first_name, last_name, phone, email, password, department, country, state, city } = req.body;
 
         try {
-            const user = await database.user.findUnique({
+            const user = await database.user.findFirst({
                 where: {
-                    email: email,
-                    phone: phone
+                    OR: [
+                        { phone: phone },
+                        { email: email }
+                    ]
                 }
             })
-
+            console.log("user", user);
             if (user) {
                 return next(CustomErrorHandler.alreadyExists("User with this credentials already exists."));
             }
@@ -180,10 +182,10 @@ class AuthController {
                 }
             })
             if (!user) {
-                return next(CustomErrorHandler.notFound("User not found."));
+                return next(CustomErrorHandler.notFound("Wrong credentials."));
             }
             // Checking password.
-            const matched = bcrypt.compare(password, user.password);
+            const matched = await bcrypt.compare(password, user.password);
             if (!matched) {
                 return next(CustomErrorHandler.wrongCredentials("Wrong password."));
             }
