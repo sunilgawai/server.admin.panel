@@ -289,7 +289,7 @@ class AuthController {
                     token: req.body.refreshToken
                 }
             })
-                .then(token => {
+                .then(results => {
                     res.status(200).json({ message: "Logged out successfully." })
                 })
                 .catch(err => next(err));
@@ -334,7 +334,7 @@ class AuthController {
                 }
             })
             if (!user) {
-                return next(CustomErrorHandler.notFound("User not found."));
+                return next(CustomErrorHandler.unAuthorized("unauthorized user."));
             }
         } catch (error) {
             return next(error);
